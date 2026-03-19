@@ -22,15 +22,15 @@ def process_packet(packet):
         else:
             protocol = "Other"
 
-        # Store data in a dictionaryc
+        # Store data in a dictionary
         packet_info = {
             "source": source_ip,
             "destination": dest_ip,
             "protocol": protocol
         }
-
+        # Appends the packet information to the list of captured packets
         packets.append(packet_info)
-
+        # Lists the captured packet info in real time
         print("Captured Packet:")
         print(packet_info)
         print("-" * 30)
