@@ -41,7 +41,14 @@ def start_sniffer():
     print("Starting packet capture...\n")
     
     # Iteration happens automatically as packets come in
-    sniff(prn=process_packet, count=10)
+    while True:
+        try:
+            num_packets = int(input("Enter the number of packets to capture: "))
+            break
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+
+    sniff(prn=process_packet, count=num_packets)
 
     print("\nSniffing complete.")
 
