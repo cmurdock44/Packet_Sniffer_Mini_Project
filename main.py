@@ -1,5 +1,8 @@
 # Imports the `sniff` function from the Scapy library which is used for capturing network packets.
 from scapy.all import sniff
+from collections import Counter
+import csv
+
 
 # Creates an empty list that stores packets
 packets = []
@@ -83,6 +86,46 @@ def display_protocol_summary():
     print("UDP packets:", udp_count)
     print("Other packets:", other_count)
 
+#Counts packet["source"] values.
+#Counts packet["destination"] values.
+#Prints the top 5 of each using Counter(...).most_common(5).
+def display_top_ips():
+    source_ips = []
+    destination_ips = []
+
+    for packet in packets:
+        source_ips.append(packet["source"])
+        destination_ips.append(packet["destination"])
+
+    top_sources = Counter(source_ips).most_common(5)
+    top_destinations = Counter(destination_ips).most_common(5)
+
+    print("\n=== Top Source IPs ===")
+    for ip, count in top_sources:
+        print(ip, ":", count, "packets")
+
+    print("\n=== Top Destination IPs ===")
+    for ip, count in top_destinations:
+        print(ip, ":", count, "packets")
+
+def export_to_csv():
+    while True:
+        choice = input("\nDo you want to export the captured packets to a CSV file? (y/n): ").lower()
+        if choice == 'y':
+            with open('captured_packets.csv', 'w', newline='') as csvfile:
+                fieldnames = ['source', 'destination', 'protocol']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+                writer.writeheader()
+                writer.writerows(packets)
+            print("Packets exported to captured_packets.csv")
+            break
+        elif choice == 'n':
+            print("Export skipped.")
+            break
+        else:
+            print("Invalid input. Please enter 'y' or 'n'.")
+    
 
 # Main program to run the sniffer and display results
 def main():
@@ -90,7 +133,8 @@ def main():
     start_sniffer()
     display_packets()
     display_protocol_summary()
-
+    display_top_ips()
+    export_to_csv()
 
 # Run program
 main()
